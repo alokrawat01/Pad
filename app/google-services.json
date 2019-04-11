@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1096790370075",
+    "firebase_url": "https://padfirebase.firebaseio.com",
+    "project_id": "padfirebase",
+    "storage_bucket": "padfirebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096790370075:android:79173df7ba634715",
+        "android_client_info": {
+          "package_name": "com.allen.pad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096790370075-e0rvgnbpeq8nd06k6serbhrhvsja3b0j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.allen.pad",
+            "certificate_hash": "f032d4ddc25464143d21579d43b3f9d799be9527"
+          }
+        },
+        {
+          "client_id": "1096790370075-8j3tgqiclerrqvn1ug48k9do5af5pbjr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1VHh7uQ0HVGEi-hnWQHXeUtSuYU_w7Ds"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096790370075-8j3tgqiclerrqvn1ug48k9do5af5pbjr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

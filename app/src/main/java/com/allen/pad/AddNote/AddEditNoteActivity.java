@@ -30,7 +30,6 @@ import com.allen.pad.Model.Label;
 import com.allen.pad.R;
 import com.allen.pad.Utility.AppUtils;
 import com.allen.pad.ViewModel.LabelViewModel;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

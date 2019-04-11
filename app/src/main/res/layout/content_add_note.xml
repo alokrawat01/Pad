@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_add_note"
+    tools:context=".AddNote.AddEditNoteActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/et_title"
+        android:hint="title"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_below="@id/et_title"
+        android:id="@+id/et_description"
+        android:hint="description"
+        android:inputType="textMultiLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.RecyclerView
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        tools:listitem="@layout/item_tickbox"
+        android:layout_below="@id/et_description"
+        android:id="@+id/rl_tickbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_marginStart="8dp"
+        android:layout_below="@+id/rl_tickbox"
+        android:id="@+id/tv_add_cb"
+        android:paddingTop="4dp"
+        android:gravity="center_vertical"
+        android:drawablePadding="4dp"
+        android:drawableStart="@drawable/ic_add"
+        android:text="List item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_below="@id/et_description"
+        android:id="@+id/ll_title"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="Priority: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <NumberPicker
+            android:id="@+id/np_priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:visibility="gone"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        android:orientation="horizontal"
+        tools:listitem="@layout/item_label_add"
+        android:padding="4dp"
+        android:layout_below="@+id/ll_title"
+        android:id="@+id/rv_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize">
+
+        <ImageView
+            android:id="@+id/iv_add"
+            android:layout_margin="16dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_add_square"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:gravity="center"
+            android:text="date"
+            android:textSize="16sp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/iv_menu"
+            android:layout_margin="16dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_add"
+        android:gravity="center"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_above="@+id/ll_bottom"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textSize="16sp"
+            android:text="Take photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textSize="16sp"
+            android:text="Choose image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textSize="16sp"
+            android:text="Drawing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textSize="16sp"
+            android:text="Recording"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textSize="16sp"
+            android:text="Tick boxes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_menu"
+        android:gravity="center"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_above="@+id/ll_bottom"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textSize="16sp"
+            android:text="Delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textSize="16sp"
+            android:text="Make a copy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textSize="16sp"
+            android:text="Send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textSize="16sp"
+            android:text="Collaborator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_label"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textSize="16sp"
+            android:text="Labels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_add_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</RelativeLayout>
+

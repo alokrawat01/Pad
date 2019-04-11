@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:layout_centerVertical="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp"
+        android:text=" "
+        android:id="@+id/cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_toEndOf="@+id/cb"
+        android:layout_toStartOf="@+id/iv_close"
+        android:layout_centerVertical="true"
+        android:id="@+id/et_title"
+        android:background="@color/transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_close"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
