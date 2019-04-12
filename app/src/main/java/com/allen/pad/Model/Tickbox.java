@@ -14,6 +14,8 @@ public class Tickbox {
 
     private boolean isChecked = false;
 
+    private int note_id;
+
     public Tickbox(String title) {
         this.title = title;
     }
@@ -22,12 +24,16 @@ public class Tickbox {
         this.id = id;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public void setChecked(boolean checked) {
         isChecked = checked;
     }
 
-    public boolean isChecked() {
-        return isChecked;
+    public void setNote_id(int note_id) {
+        this.note_id = note_id;
     }
 
     public int getId() {
@@ -36,5 +42,13 @@ public class Tickbox {
 
     public String getTitle() {
         return title;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public int getNote_id() {
+        return note_id;
     }
 }

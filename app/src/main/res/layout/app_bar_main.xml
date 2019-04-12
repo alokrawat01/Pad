@@ -56,7 +56,4 @@
     <include layout="@layout/content_main" />
     <include layout="@layout/layout_fab_submenu"/>
 
-
-
-
 </android.support.design.widget.CoordinatorLayout>

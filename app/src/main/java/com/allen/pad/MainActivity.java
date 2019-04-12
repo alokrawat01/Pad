@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     private NoteViewModel noteViewModel;
     List<Note> notes;
     private boolean fabExpanded = false;
+    int temp_id;
 
 
     @Override
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity
         noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
+                temp_id = (notes.size()+1);
                 adapter.submitList(notes);
             }
         });
@@ -136,11 +138,12 @@ public class MainActivity extends AppCompatActivity
             String title =  data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
             String description =  data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
             ArrayList<String> label = data.getStringArrayListExtra(AddEditNoteActivity.EXTRA_LABEL);
+            ArrayList<String> tickbox = data.getStringArrayListExtra(AddEditNoteActivity.EXTRA_TICKBOX);
             Date created_time = new Date(data.getLongExtra(AddEditNoteActivity.EXTRA_CREATED_TIME, 1));
             Date modified_time = new Date(data.getLongExtra(AddEditNoteActivity.EXTRA_MODIFIED_TIME, 1));
             int priority =  data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
 
-            noteViewModel.insert(new Note(title, description, label, created_time, modified_time, priority));
+            noteViewModel.insert(new Note(title, description, label, tickbox, created_time, modified_time, priority));
 
             Toast.makeText(MainActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
         }else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK){
@@ -152,11 +155,12 @@ public class MainActivity extends AppCompatActivity
             String title =  data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
             String description =  data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
             ArrayList<String> label = data.getStringArrayListExtra(AddEditNoteActivity.EXTRA_LABEL);
+            ArrayList<String> tickbox = data.getStringArrayListExtra(AddEditNoteActivity.EXTRA_TICKBOX);
             Date created_time = new Date(data.getLongExtra(AddEditNoteActivity.EXTRA_CREATED_TIME, 1));
             Date modified_time = new Date(data.getLongExtra(AddEditNoteActivity.EXTRA_MODIFIED_TIME, 1));
             int priority =  data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
 
-            Note note = new Note(title, description, label, created_time, modified_time, priority);
+            Note note = new Note(title, description, label, tickbox, created_time, modified_time, priority);
             note.setId(id);
             noteViewModel.update(note);
 
@@ -253,6 +257,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.layoutFabNote:
                 closeSubMenusFab();
                 Intent intent = new Intent(MainActivity.this, AddEditNoteActivity.class);
+                intent.putExtra("TEMP_ID", temp_id);
                 startActivityForResult(intent, ADD_NOTE_REQUEST);
                 break;
         }

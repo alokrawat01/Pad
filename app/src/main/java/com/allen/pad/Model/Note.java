@@ -23,6 +23,9 @@ public class Note {
     @TypeConverters({StringConverter.class})
     private ArrayList<String> label;
 
+    @TypeConverters({StringConverter.class})
+    private ArrayList<String> tickbox;
+
     @ColumnInfo(name = "created_at")
     @TypeConverters({TimestampConverter.class})
     private Date createdAt;
@@ -31,15 +34,15 @@ public class Note {
     @TypeConverters({TimestampConverter.class})
     private Date modifiedAt;
 
-
     @ColumnInfo(name = "primary_column")
     private int priority;
 
 
-    public Note(String title, String description, ArrayList<String> label, Date createdAt, Date modifiedAt, int priority) {
+    public Note(String title, String description, ArrayList<String> label, ArrayList<String> tickbox, Date createdAt, Date modifiedAt, int priority) {
         this.title = title;
         this.description = description;
         this.label = label;
+        this.tickbox = tickbox;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.priority = priority;
@@ -79,5 +82,9 @@ public class Note {
 
     public Date getModifiedAt() {
         return modifiedAt;
+    }
+
+    public ArrayList<String> getTickbox() {
+        return tickbox;
     }
 }

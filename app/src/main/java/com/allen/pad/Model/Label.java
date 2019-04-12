@@ -14,6 +14,8 @@ public class Label {
 
     private boolean isChecked = false;
 
+    private int note_id;
+
     public Label(String title) {
         this.title = title;
     }
@@ -26,8 +28,8 @@ public class Label {
         isChecked = checked;
     }
 
-    public boolean isChecked() {
-        return isChecked;
+    public void setNote_id(int note_id) {
+        this.note_id = note_id;
     }
 
     public int getId() {
@@ -36,5 +38,13 @@ public class Label {
 
     public String getTitle() {
         return title;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public int getNote_id() {
+        return note_id;
     }
 }
