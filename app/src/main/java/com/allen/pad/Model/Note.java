@@ -4,11 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
-
-import com.allen.pad.Database.StringConverter;
 import com.allen.pad.Database.TimestampConverter;
-
-import java.util.ArrayList;
 import java.util.Date;
 
 @Entity(tableName = "note_table")
@@ -20,11 +16,7 @@ public class Note {
 
     private String description;
 
-    @TypeConverters({StringConverter.class})
-    private ArrayList<String> label;
-
-    @TypeConverters({StringConverter.class})
-    private ArrayList<String> tickbox;
+    private int color;
 
     @ColumnInfo(name = "created_at")
     @TypeConverters({TimestampConverter.class})
@@ -38,11 +30,10 @@ public class Note {
     private int priority;
 
 
-    public Note(String title, String description, ArrayList<String> label, ArrayList<String> tickbox, Date createdAt, Date modifiedAt, int priority) {
+    public Note(String title, String description, int color, Date createdAt, Date modifiedAt, int priority) {
         this.title = title;
         this.description = description;
-        this.label = label;
-        this.tickbox = tickbox;
+        this.color = color;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.priority = priority;
@@ -50,6 +41,14 @@ public class Note {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getColor() {
+        return color;
     }
 
     public int getId() {
@@ -64,18 +63,6 @@ public class Note {
         return description;
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public ArrayList<String> getLabel() {
-        return label;
-    }
-
-    public void setLabel(ArrayList<String> label) {
-        this.label = label;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -84,7 +71,8 @@ public class Note {
         return modifiedAt;
     }
 
-    public ArrayList<String> getTickbox() {
-        return tickbox;
+    public int getPriority() {
+        return priority;
     }
+
 }

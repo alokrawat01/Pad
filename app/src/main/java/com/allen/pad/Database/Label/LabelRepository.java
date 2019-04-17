@@ -37,6 +37,10 @@ public class LabelRepository {
         return allLabels;
     }
 
+    public LiveData<List<Label>> getNoteLabels(int id) {
+        return labelDao.getNoteLabels(id);
+    }
+
     private static class InsertLabelAsyncTask extends AsyncTask<Label, Void, Void> {
         private LabelDao labelDao;
 

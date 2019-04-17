@@ -26,4 +26,7 @@ public interface LabelDao {
 
     @Query("SELECT * FROM label_table ORDER BY primary_column DESC")
     LiveData<List<Label>> getAllLabel();
+
+    @Query("SELECT * FROM label_table WHERE note_id=:id ORDER BY primary_column DESC")
+    LiveData<List<Label>> getNoteLabels(int id);
 }

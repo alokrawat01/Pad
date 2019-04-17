@@ -6,8 +6,8 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-@Entity(tableName = "image_table")
-public class Image implements Parcelable {
+@Entity(tableName = "image_table_temp")
+public class ImageTemp implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -17,12 +17,12 @@ public class Image implements Parcelable {
     @ColumnInfo(name = "note_id")
     private int note_id;
 
-    public Image(String title, int note_id) {
+    public ImageTemp(String title, int note_id) {
         this.title = title;
         this.note_id = note_id;
     }
 
-    protected Image(Parcel in) {
+    protected ImageTemp(Parcel in) {
         id = in.readInt();
         title = in.readString();
         note_id = in.readInt();
@@ -40,15 +40,15 @@ public class Image implements Parcelable {
         return 0;
     }
 
-    public static final Creator<Image> CREATOR = new Creator<Image>() {
+    public static final Creator<ImageTemp> CREATOR = new Creator<ImageTemp>() {
         @Override
-        public Image createFromParcel(Parcel in) {
-            return new Image(in);
+        public ImageTemp createFromParcel(Parcel in) {
+            return new ImageTemp(in);
         }
 
         @Override
-        public Image[] newArray(int size) {
-            return new Image[size];
+        public ImageTemp[] newArray(int size) {
+            return new ImageTemp[size];
         }
     };
 

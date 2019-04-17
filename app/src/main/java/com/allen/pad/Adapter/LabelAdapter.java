@@ -20,14 +20,16 @@ public class LabelAdapter extends ListAdapter<Label, LabelAdapter.ViewHolderNote
     }
 
     private static final DiffUtil.ItemCallback<Label> DIFF_CALLBACK = new DiffUtil.ItemCallback<Label>() {
+
         @Override
-        public boolean areItemsTheSame(@NonNull Label note, @NonNull Label t1) {
-            return note.getId() == t1.getId();
+        public boolean areItemsTheSame(@NonNull Label label, @NonNull Label t1) {
+            return label.getId() == t1.getId();
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull Label note, @NonNull Label t1) {
-            return note.getTitle().equals(t1.getTitle());
+        public boolean areContentsTheSame(@NonNull Label label, @NonNull Label t1) {
+
+            return label.getTitle().equals(t1.getTitle());
         }
     };
 
@@ -53,10 +55,6 @@ public class LabelAdapter extends ListAdapter<Label, LabelAdapter.ViewHolderNote
         }
         );
 
-    }
-
-    public Label getNoteAt(int adapterPosition) {
-        return getItem(adapterPosition);
     }
 
     class ViewHolderNote extends RecyclerView.ViewHolder {

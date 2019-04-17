@@ -6,60 +6,46 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-@Entity(tableName = "tickbox_table")
-public class Tickbox implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
+@Entity(tableName = "label_table_temp")
+public class LabelTemp implements Parcelable {
+    @PrimaryKey()
     private int id;
 
     @ColumnInfo(name = "primary_column")
     private String title;
 
-    private boolean isChecked = false;
+    private boolean isChecked = true;
 
     private int note_id;
 
-    public Tickbox(String title) {
+    public LabelTemp(int id, String title, int note_id, boolean isChecked) {
+        this.id = id;
         this.title = title;
+        this.note_id = note_id;
+        this.isChecked = isChecked;
     }
 
-    protected Tickbox(Parcel in) {
+    protected LabelTemp(Parcel in) {
         id = in.readInt();
         title = in.readString();
         isChecked = in.readByte() != 0;
         note_id = in.readInt();
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(title);
-        dest.writeByte((byte) (isChecked ? 1 : 0));
-        dest.writeInt(note_id);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Tickbox> CREATOR = new Creator<Tickbox>() {
+    public static final Creator<LabelTemp> CREATOR = new Creator<LabelTemp>() {
         @Override
-        public Tickbox createFromParcel(Parcel in) {
-            return new Tickbox(in);
+        public LabelTemp createFromParcel(Parcel in) {
+            return new LabelTemp(in);
         }
 
         @Override
-        public Tickbox[] newArray(int size) {
-            return new Tickbox[size];
+        public LabelTemp[] newArray(int size) {
+            return new LabelTemp[size];
         }
     };
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public void setChecked(boolean checked) {
@@ -84,5 +70,18 @@ public class Tickbox implements Parcelable {
 
     public int getNote_id() {
         return note_id;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeByte((byte) (isChecked ? 1 : 0));
+        dest.writeInt(note_id);
     }
 }

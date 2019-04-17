@@ -4,11 +4,9 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.v4.app.Fragment;
 
 import com.allen.pad.Model.Note;
-import com.allen.pad.Database.NoteRepository;
+import com.allen.pad.Database.Note.NoteRepository;
 
 import java.util.List;
 

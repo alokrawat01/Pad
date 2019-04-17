@@ -38,4 +38,9 @@ public class LabelViewModel extends AndroidViewModel {
         return allLabels;
     }
 
+    public LiveData<List<Label>> getNoteLabels(int id){
+        return repository.getNoteLabels(id);
+    }
+
+
 }

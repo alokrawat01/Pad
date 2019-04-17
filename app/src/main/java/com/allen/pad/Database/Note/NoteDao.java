@@ -1,4 +1,4 @@
-package com.allen.pad.Database;
+package com.allen.pad.Database.Note;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;

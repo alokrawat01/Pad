@@ -8,24 +8,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.allen.pad.Model.Label;
+import com.allen.pad.Model.LabelTemp;
 import com.allen.pad.R;
 
-public class LabelAddAdapter extends ListAdapter<Label, LabelAddAdapter.ViewHolderNote> {
+public class LabelAddEditAdapter extends ListAdapter<LabelTemp, LabelAddEditAdapter.ViewHolderNote> {
     private onItemClickListener listener;
 
-    public LabelAddAdapter() {
+    public LabelAddEditAdapter() {
         super(DIFF_CALLBACK);
     }
 
-    private static final DiffUtil.ItemCallback<Label> DIFF_CALLBACK = new DiffUtil.ItemCallback<Label>() {
+    private static final DiffUtil.ItemCallback<LabelTemp> DIFF_CALLBACK = new DiffUtil.ItemCallback<LabelTemp>() {
         @Override
-        public boolean areItemsTheSame(@NonNull Label note, @NonNull Label t1) {
+        public boolean areItemsTheSame(@NonNull LabelTemp note, @NonNull LabelTemp t1) {
             return note.getId() == t1.getId();
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull Label note, @NonNull Label t1) {
+        public boolean areContentsTheSame(@NonNull LabelTemp note, @NonNull LabelTemp t1) {
             return note.getTitle().equals(t1.getTitle());
         }
     };
@@ -41,10 +41,6 @@ public class LabelAddAdapter extends ListAdapter<Label, LabelAddAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolderNote viewHolderNote, int i) {
         String string = getItem(i).getTitle();
         viewHolderNote.tv_label.setText(string);
-    }
-
-    public Label getNoteAt(int adapterPosition) {
-        return getItem(adapterPosition);
     }
 
     class ViewHolderNote extends RecyclerView.ViewHolder {
@@ -65,7 +61,7 @@ public class LabelAddAdapter extends ListAdapter<Label, LabelAddAdapter.ViewHold
     }
 
     public interface onItemClickListener{
-        void onItemClick(Label note);
+        void onItemClick(LabelTemp note);
     }
 
     public void setOnItemClickListener(onItemClickListener listener){

@@ -13,7 +13,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import com.allen.pad.Model.Tickbox;
 import com.allen.pad.R;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -49,13 +48,7 @@ public class TickboxAdapter extends ListAdapter<Tickbox, TickboxAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolderTickbox viewHolderTickbox, int i) {
         Tickbox tickbox = getItem(i);
         viewHolderTickbox.et_title.setText(tickbox.getTitle());
-
-
         viewHolderTickbox.cb.setChecked(tickbox.isChecked());
-    }
-
-    public Tickbox getTickboxAt(int adapterPosition) {
-        return getItem(adapterPosition);
     }
 
     class ViewHolderTickbox extends RecyclerView.ViewHolder {

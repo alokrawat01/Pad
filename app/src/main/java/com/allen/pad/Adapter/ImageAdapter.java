@@ -10,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.allen.pad.Model.Image;
+import com.allen.pad.Model.ImageTemp;
 import com.allen.pad.R;
 import com.bumptech.glide.Glide;
 
-public class ImageAdapter extends ListAdapter<Image, ImageAdapter.ViewHolderImage> {
+public class ImageAdapter extends ListAdapter<ImageTemp, ImageAdapter.ViewHolderImage> {
     private onRemoveClickListener listener;
     private onItemClickListener clickListener;
     private Context context;
@@ -24,14 +24,14 @@ public class ImageAdapter extends ListAdapter<Image, ImageAdapter.ViewHolderImag
         this.context = context;
     }
 
-    private static final DiffUtil.ItemCallback<Image> DIFF_CALLBACK = new DiffUtil.ItemCallback<Image>() {
+    private static final DiffUtil.ItemCallback<ImageTemp> DIFF_CALLBACK = new DiffUtil.ItemCallback<ImageTemp>() {
         @Override
-        public boolean areItemsTheSame(@NonNull Image image, @NonNull Image t1) {
+        public boolean areItemsTheSame(@NonNull ImageTemp image, @NonNull ImageTemp t1) {
             return image.getId() == t1.getId();
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull Image image, @NonNull Image t1) {
+        public boolean areContentsTheSame(@NonNull ImageTemp image, @NonNull ImageTemp t1) {
             return image.getTitle().equals(t1.getTitle());
         }
     };
@@ -46,7 +46,7 @@ public class ImageAdapter extends ListAdapter<Image, ImageAdapter.ViewHolderImag
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderImage viewHolderImage, int i) {
-        Image image = getItem(i);
+        ImageTemp image = getItem(i);
         Glide
                 .with(context)
                 .load(image.getTitle())
@@ -54,7 +54,7 @@ public class ImageAdapter extends ListAdapter<Image, ImageAdapter.ViewHolderImag
 
     }
 
-    public Image getImageAt(int adapterPosition) {
+    public ImageTemp getImageAt(int adapterPosition) {
         return getItem(adapterPosition);
     }
 
@@ -87,7 +87,7 @@ public class ImageAdapter extends ListAdapter<Image, ImageAdapter.ViewHolderImag
     }
 
     public interface onRemoveClickListener{
-        void onRemoveClick(Image image);
+        void onRemoveClick(ImageTemp image);
     }
 
     public void setOnItemRemoveListener(onRemoveClickListener listener){
@@ -95,7 +95,7 @@ public class ImageAdapter extends ListAdapter<Image, ImageAdapter.ViewHolderImag
     }
 
     public interface onItemClickListener{
-        void onItemClick(Image image);
+        void onItemClick(ImageTemp image);
     }
 
     public void setOnItemClickListener(onItemClickListener listener){

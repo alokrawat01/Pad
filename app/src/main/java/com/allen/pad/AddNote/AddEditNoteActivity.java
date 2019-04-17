@@ -19,13 +19,10 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,19 +32,22 @@ import android.widget.Toast;
 import com.allen.pad.Adapter.ColorAdapter;
 import com.allen.pad.Adapter.ImageAdapter;
 import com.allen.pad.Adapter.LabelAdapter;
-import com.allen.pad.Adapter.LabelAddAdapter;
+import com.allen.pad.Adapter.LabelAddEditAdapter;
 import com.allen.pad.Adapter.TickboxAdapter;
 import com.allen.pad.Model.Color;
 import com.allen.pad.Model.Image;
+import com.allen.pad.Model.ImageTemp;
 import com.allen.pad.Model.Label;
+import com.allen.pad.Model.LabelTemp;
 import com.allen.pad.Model.Tickbox;
 import com.allen.pad.R;
 import com.allen.pad.Utility.AppUtils;
 import com.allen.pad.Utility.draw.activity.DrawingActivity;
+import com.allen.pad.ViewModel.ImageTempViewModel;
 import com.allen.pad.ViewModel.ImageViewModel;
+import com.allen.pad.ViewModel.LabelTempViewModel;
 import com.allen.pad.ViewModel.LabelViewModel;
 import com.allen.pad.ViewModel.TickboxViewModel;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -60,12 +60,10 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
     public static final String EXTRA_ID = "com.allen.pad.EXTRA_ID";
     public static final String EXTRA_TITLE = "com.allen.pad.EXTRA_TITLE";
     public static final String EXTRA_DESCRIPTION = "com.allen.pad.EXTRA_DESCRIPTION";
-    public static final String EXTRA_TICKBOX = "com.allen.pad.EXTRA_TICKBOX";
-    public static final String EXTRA_LABEL = "com.allen.pad.EXTRA_LABEL";
+    public static final String EXTRA_COLOR = "com.allen.pad.EXTRA_COLOR";
     public static final String EXTRA_CREATED_TIME = "com.allen.pad.EXTRA_CREATED_TIME";
     public static final String EXTRA_MODIFIED_TIME = "com.allen.pad.EXTRA_MODIFIED_TIME";
     public static final String EXTRA_PRIORITY = "com.allen.pad.EXTRA_PRIORITY";
-    public static final int ADD_REQUEST = 1;
 
     CoordinatorLayout cl_add_note;
     EditText et_title;
@@ -84,24 +82,27 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
     RecyclerView rv_color;
     TextView tv_label;
 
-    LabelViewModel viewModel;
-    TickboxViewModel tickboxViewModel;
+    ImageTempViewModel imageTempViewModel;
+    ArrayList<ImageTemp> listTempImages;
     ImageViewModel imageViewModel;
-    LabelAddAdapter labelAddAdapter;
-    ArrayList<Label> listLabels;
-    TickboxAdapter tickboxAdapter;
-    ArrayList<Tickbox> listTickboxes;
-    ImageAdapter imageAdapter;
     ArrayList<Image> listImages;
 
+    LabelTempViewModel labelTempViewModel;
+    ArrayList<LabelTemp> listTempLabels;
+    LabelViewModel labelViewModel;
+    ArrayList<Label> listLabels;
+
+    TickboxViewModel tickboxViewModel;
+    ImageAdapter imageAdapter;
+    LabelAddEditAdapter labelAddAdapter;
+    TickboxAdapter tickboxAdapter;
+    ArrayList<Tickbox> listTickboxes;
+    ColorAdapter adapter;
+    List<Color> colors;
 
     boolean isAddVisible = false;
     boolean isMenuVisible = false;
-    List<Integer> listColor;
-    List<Color> colors;
-    ColorAdapter adapter;
-    ArrayList<String> label = new ArrayList<>();
-    ArrayList<String> tickbox = new ArrayList<>();
+    int bg_color;
     Date createdTime;
     Date modifiedTime;
     int note_id;
@@ -128,57 +129,201 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
 
-        viewModel = ViewModelProviders.of(this).get(LabelViewModel.class);
-        viewModel.getAllLabels().observe(this, new Observer<List<Label>>() {
-            @Override
-            public void onChanged(@Nullable List<Label> labels) {
-                listLabels = new ArrayList<>();
-                for (Label l: labels) {
-                    if (l.isChecked()){
-                        listLabels.add(l);
+        initializeViews();
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_ID)){
+            setTitle("Edit Note");
+            note_id = intent.getIntExtra(EXTRA_ID, -1);
+            et_title.setText(intent.getStringExtra(EXTRA_TITLE));
+            et_description.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
+            bg_color = intent.getIntExtra(EXTRA_COLOR, android.R.color.white);
+            createdTime = new Date(intent.getLongExtra(AddEditNoteActivity.EXTRA_CREATED_TIME, 1));
+            modifiedTime = new Date(intent.getLongExtra(AddEditNoteActivity.EXTRA_MODIFIED_TIME, 1));
+            np_priority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
+
+            imageTempViewModel = ViewModelProviders.of(this).get(ImageTempViewModel.class);
+            imageTempViewModel.getNoteImageTemps(note_id).observe(this, new Observer<List<ImageTemp>>() {
+                @Override
+                public void onChanged(@Nullable List<ImageTemp> images) {
+                    if (images != null) {
+                        System.out.println("AddEdit: noteTempImages: " + images.size());
+                        listTempImages = new ArrayList<>(images);
+                        imageAdapter.submitList(listTempImages);
                     }
-                    labelAddAdapter.submitList(listLabels);
                 }
-            }
-        });
+            });
+
+            imageViewModel = ViewModelProviders.of(this).get(ImageViewModel.class);
+            imageViewModel.getNoteImages(note_id).observe(this, new Observer<List<Image>>() {
+                @Override
+                public void onChanged(@Nullable List<Image> images) {
+                    // New note image list is empty i.e. size zero
+                    if (images != null) {
+                        System.out.println("AddEdit: noteImages: " + images.size());
+                        listImages = new ArrayList<>(images);
+                        for (Image i : listImages) {
+                            imageTempViewModel.insert(new ImageTemp(i.getTitle(), i.getNote_id()));
+                        }
+                    }
+                }
+            });
+
+            labelTempViewModel = ViewModelProviders.of(this).get(LabelTempViewModel.class);
+            labelTempViewModel.getAllLabels().observe(this, new Observer<List<LabelTemp>>() {
+                @Override
+                public void onChanged(@Nullable List<LabelTemp> labels) {
+                    // New note label list is empty i.e. size zero
+                    if (labels != null) {
+                        System.out.println("Edit: noteTempLabels: " + labels.size());
+                        listTempLabels = new ArrayList<>(labels);
+                        labelAddAdapter.submitList(listTempLabels);
+
+                    }
+                }
+            });
+
+            labelViewModel = ViewModelProviders.of(this).get(LabelViewModel.class);
+            labelViewModel.getNoteLabels(note_id).observe(this, new Observer<List<Label>>() {
+                @Override
+                public void onChanged(@Nullable List<Label> labels) {
+                    // New note label list is empty i.e. size zero
+                    if (labels != null) {
+                        System.out.println("Edit: noteLabels: " + labels.size());
+                        listLabels = new ArrayList<>(labels);
+                        for (Label l: listLabels) {
+                            labelTempViewModel.insert(new LabelTemp(l.getId(), l.getTitle(), l.getNote_id(), l.isChecked()));
+                        }
+                    }
+                }
+            });
+
+        }else {
+            setTitle("Add Note");
+            note_id = intent.getIntExtra("TEMP_ID", -1);
+
+            imageViewModel = ViewModelProviders.of(this).get(ImageViewModel.class);
+            imageViewModel.getNoteImages(note_id).observe(this, new Observer<List<Image>>() {
+                @Override
+                public void onChanged(@Nullable List<Image> images) {
+                    // New note image list is empty i.e. size zero
+                    if (images != null) {
+                        System.out.println("AddEdit: noteImages: " + images.size());
+                        listImages = new ArrayList<>(images);
+                    }
+                }
+            });
+
+            imageTempViewModel = ViewModelProviders.of(this).get(ImageTempViewModel.class);
+            imageTempViewModel.getNoteImageTemps(note_id).observe(this, new Observer<List<ImageTemp>>() {
+                @Override
+                public void onChanged(@Nullable List<ImageTemp> images) {
+                    if (images != null) {
+                        System.out.println("AddEdit: noteTempImages: " + images.size());
+                        listTempImages = new ArrayList<>(images);
+                        imageAdapter.submitList(listTempImages);
+                    }
+                }
+            });
+
+
+            labelViewModel = ViewModelProviders.of(this).get(LabelViewModel.class);
+            labelViewModel.getNoteLabels(note_id).observe(this, new Observer<List<Label>>() {
+                @Override
+                public void onChanged(@Nullable List<Label> labels) {
+                    // New note label list is empty i.e. size zero
+                    System.out.println("AddEdit: noteLabels: " + labels.size());
+                    listLabels = new ArrayList<>(labels);
+                }
+            });
+
+
+            labelTempViewModel = ViewModelProviders.of(this).get(LabelTempViewModel.class);
+            labelTempViewModel.getAllLabels().observe(this, new Observer<List<LabelTemp>>() {
+                @Override
+                public void onChanged(@Nullable List<LabelTemp> labels) {
+                    // New note label list is empty i.e. size zero
+                    System.out.println("AddEdit: noteTempLabels: " + labels.size());
+                    listTempLabels = new ArrayList<>(labels);
+                    for (LabelTemp l: labels) {
+                        if (l.isChecked()){
+                            listTempLabels.add(l);
+                        }
+                        labelAddAdapter.submitList(listTempLabels);
+                    }
+                }
+            });
+        }
+
+
 
         tickboxViewModel = ViewModelProviders.of(this).get(TickboxViewModel.class);
         tickboxViewModel.getAllTickboxs().observe(this, new Observer<List<Tickbox>>() {
             @Override
             public void onChanged(@Nullable List<Tickbox> tickboxes) {
                 listTickboxes = new ArrayList<>(tickboxes);
-
                 tickboxAdapter.submitList(listTickboxes);
+
             }
         });
 
-        imageViewModel = ViewModelProviders.of(this).get(ImageViewModel.class);
-        imageViewModel.getAllImages().observe(this, new Observer<List<Image>>() {
-            @Override
-            public void onChanged(@Nullable List<Image> images) {
-                listImages = new ArrayList<>(images);
+        checkStoragePermission();
 
-                imageAdapter.submitList(listImages);
-            }
-        });
+    }
 
+    private void initializeViews(){
         cl_add_note = findViewById(R.id.cl_add_note);
+
         et_title = findViewById(R.id.et_title);
+
         et_description = findViewById(R.id.et_description);
+
+        np_priority = findViewById(R.id.np_priority);
+        np_priority.setMinValue(1);
+        np_priority.setMaxValue(10);
+
+        rv_images = findViewById(R.id.rv_images);
+        rv_images.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.HORIZONTAL, false));
+        imageAdapter = new ImageAdapter(AddEditNoteActivity.this);
+        rv_images.setAdapter(imageAdapter);
+
+        imageAdapter.setOnItemRemoveListener(new ImageAdapter.onRemoveClickListener() {
+            @Override
+            public void onRemoveClick(ImageTemp image) {
+                imageTempViewModel.delete(image);
+            }
+        });
+
+        imageAdapter.setOnItemClickListener(new ImageAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(ImageTemp image) {
+                ImageFragment imageFragment = new ImageFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("IMAGES", listImages);
+                imageFragment.setArguments(bundle);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.cl_add_note, imageFragment)
+                        .addToBackStack("show_images")
+                        .commit();
+            }
+        });
 
         rv_label = findViewById(R.id.rv_label);
         rv_label.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.HORIZONTAL, false));
-        labelAddAdapter = new LabelAddAdapter();
+        labelAddAdapter = new LabelAddEditAdapter();
         rv_label.setAdapter(labelAddAdapter);
 
-        labelAddAdapter.setOnItemClickListener(new LabelAddAdapter.onItemClickListener() {
+        labelAddAdapter.setOnItemClickListener(new LabelAddEditAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(Label note) {
+            public void onItemClick(LabelTemp labelTemp) {
                 startLabelFragment();
             }
         });
@@ -203,47 +348,12 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
                         tickboxViewModel.update(tickbox);
                     }
                 });
-
             }
         });
 
         tv_add_cb = findViewById(R.id.tv_add_cb);
         tv_add_cb.setOnClickListener(this);
 
-        rv_images = findViewById(R.id.rv_images);
-        rv_images.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.HORIZONTAL, false));
-        imageAdapter = new ImageAdapter(AddEditNoteActivity.this);
-        rv_images.setAdapter(imageAdapter);
-
-        imageAdapter.setOnItemRemoveListener(new ImageAdapter.onRemoveClickListener() {
-            @Override
-            public void onRemoveClick(Image image) {
-                imageViewModel.delete(image);
-            }
-        });
-
-        imageAdapter.setOnItemClickListener(new ImageAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(Image image) {
-                ImageFragment imageFragment = new ImageFragment();
-
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("IMAGES", listImages);
-                imageFragment.setArguments(bundle);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.cl_add_note, imageFragment)
-                        .addToBackStack("show_images")
-                        .commit();
-            }
-        });
-
-
-
-
-
-
-        np_priority = findViewById(R.id.np_priority);
         iv_add = findViewById(R.id.iv_add);
         iv_add.setOnClickListener(this);
 
@@ -276,34 +386,11 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
         adapter.setOnItemClickListener(new ColorAdapter.onItemClickListener() {
             @Override
             public void onItemClick(Color color) {
-                cl_add_note.setBackgroundColor(color.getColor());
+                bg_color = color.getColor();
+                cl_add_note.setBackgroundColor(bg_color);
                 System.out.println("Color: " + color.getColor());
             }
         });
-
-        np_priority.setMinValue(1);
-        np_priority.setMaxValue(10);
-
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-
-        Intent intent = getIntent();
-        if (intent.hasExtra(EXTRA_ID)){
-            setTitle("Edit Note");
-            note_id = intent.getIntExtra(EXTRA_ID, -1);
-            et_title.setText(intent.getStringExtra(EXTRA_TITLE));
-            et_description.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
-            label = intent.getStringArrayListExtra(EXTRA_LABEL);
-            tickbox = intent.getStringArrayListExtra(EXTRA_TICKBOX);
-            createdTime = new Date(intent.getLongExtra(AddEditNoteActivity.EXTRA_CREATED_TIME, 1));
-            modifiedTime = new Date(intent.getLongExtra(AddEditNoteActivity.EXTRA_MODIFIED_TIME, 1));
-            np_priority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
-        }else {
-            setTitle("Add Note");
-            note_id = intent.getIntExtra("TEMP_ID", -1);
-
-        }
-
-        checkStoragePermission();
 
     }
 
@@ -330,7 +417,7 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
         String description = et_description.getText().toString().trim();
         int priority = np_priority.getValue();
 
-        if (title.isEmpty() || description.isEmpty() || listLabels.size() == 0 || listTickboxes.size() == 0){
+        if (title.isEmpty() || description.isEmpty()){
             Toast.makeText(AddEditNoteActivity.this, "Title and description can't be empty", Toast.LENGTH_LONG).show();
             return;
         }
@@ -338,8 +425,7 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
         Intent data = new Intent();
         data.putExtra(EXTRA_TITLE, title);
         data.putExtra(EXTRA_DESCRIPTION, description);
-        data.putStringArrayListExtra(EXTRA_LABEL, label);
-        data.putStringArrayListExtra(EXTRA_TICKBOX, tickbox);
+        data.putExtra(EXTRA_COLOR, bg_color);
         data.putExtra(EXTRA_CREATED_TIME, AppUtils.getCurrentDateTime());
         data.putExtra(EXTRA_MODIFIED_TIME, AppUtils.getCurrentDateTime());
         data.putExtra(EXTRA_PRIORITY, priority);
@@ -350,8 +436,13 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
         }
 
         setResult(RESULT_OK, data);
-        finish();
 
+        for (ImageTemp i: listTempImages) {
+            imageViewModel.insert(new Image(i.getTitle(), i.getNote_id()));
+        }
+
+
+        finish();
     }
 
     @Override
@@ -400,9 +491,13 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
 
 
     private void startLabelFragment(){
+        LabelFragment labelFragment = new LabelFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("NOTE_ID", note_id);
+        labelFragment.setArguments(bundle);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.cl_add_note, new LabelFragment())
+                .replace(R.id.cl_add_note, labelFragment)
                 .addToBackStack("add_note")
                 .commit();
     }
@@ -417,7 +512,6 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
             Bitmap bitmap = BitmapFactory.decodeByteArray(result, 0, result.length);
             saveImage(bitmap);
         }
-
     }
 
     public void checkStoragePermission() {
@@ -485,7 +579,7 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
             e.printStackTrace();
         }
 
-        imageViewModel.insert(new Image(file_path+"/"+file_name, note_id));
+        imageTempViewModel.insert(new ImageTemp(file_path+"/"+file_name, note_id));
     }
 
     @Override
@@ -494,6 +588,14 @@ public class AddEditNoteActivity extends AppCompatActivity implements View.OnCli
             getSupportFragmentManager().popBackStackImmediate();
         }
         else super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("onDestroy");
+        imageTempViewModel.deleteAllImageTemps();
+        labelTempViewModel.deleteAllLabels();
     }
 
     @Override

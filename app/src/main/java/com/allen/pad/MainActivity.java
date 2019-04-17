@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.allen.pad.Adapter.NoteAdapter;
 import com.allen.pad.AddNote.AddEditNoteActivity;
+import com.allen.pad.Model.Label;
 import com.allen.pad.Model.Note;
 import com.allen.pad.ViewModel.NoteViewModel;
 import java.util.ArrayList;
@@ -121,9 +122,8 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.getId());
                 intent.putExtra(AddEditNoteActivity.EXTRA_TITLE, note.getTitle());
                 intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.getDescription());
+                intent.putExtra(AddEditNoteActivity.EXTRA_COLOR, note.getColor());
                 intent.putExtra(AddEditNoteActivity.EXTRA_PRIORITY, note.getPriority());
-                intent.putExtra(AddEditNoteActivity.EXTRA_LABEL, note.getLabel());
-
                 startActivityForResult(intent, EDIT_NOTE_REQUEST);
             }
         });
@@ -137,13 +137,12 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK){
             String title =  data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
             String description =  data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
-            ArrayList<String> label = data.getStringArrayListExtra(AddEditNoteActivity.EXTRA_LABEL);
-            ArrayList<String> tickbox = data.getStringArrayListExtra(AddEditNoteActivity.EXTRA_TICKBOX);
             Date created_time = new Date(data.getLongExtra(AddEditNoteActivity.EXTRA_CREATED_TIME, 1));
             Date modified_time = new Date(data.getLongExtra(AddEditNoteActivity.EXTRA_MODIFIED_TIME, 1));
+            int color = data.getIntExtra(AddEditNoteActivity.EXTRA_COLOR, android.R.color.white);
             int priority =  data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
 
-            noteViewModel.insert(new Note(title, description, label, tickbox, created_time, modified_time, priority));
+            noteViewModel.insert(new Note(title, description, color, created_time, modified_time, priority));
 
             Toast.makeText(MainActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
         }else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK){
@@ -154,13 +153,12 @@ public class MainActivity extends AppCompatActivity
 
             String title =  data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
             String description =  data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
-            ArrayList<String> label = data.getStringArrayListExtra(AddEditNoteActivity.EXTRA_LABEL);
-            ArrayList<String> tickbox = data.getStringArrayListExtra(AddEditNoteActivity.EXTRA_TICKBOX);
             Date created_time = new Date(data.getLongExtra(AddEditNoteActivity.EXTRA_CREATED_TIME, 1));
             Date modified_time = new Date(data.getLongExtra(AddEditNoteActivity.EXTRA_MODIFIED_TIME, 1));
+            int color = data.getIntExtra(AddEditNoteActivity.EXTRA_COLOR, android.R.color.white);
             int priority =  data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
 
-            Note note = new Note(title, description, label, tickbox, created_time, modified_time, priority);
+            Note note = new Note(title, description, color, created_time, modified_time, priority);
             note.setId(id);
             noteViewModel.update(note);
 

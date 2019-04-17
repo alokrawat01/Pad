@@ -1,9 +1,10 @@
-package com.allen.pad.Database;
+package com.allen.pad.Database.Note;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
+import com.allen.pad.Database.NoteDatabase;
 import com.allen.pad.Model.Note;
 
 import java.util.List;

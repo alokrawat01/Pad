@@ -26,4 +26,7 @@ public interface ImageDao {
 
     @Query("SELECT * FROM image_table ORDER BY primary_column DESC")
     LiveData<List<Image>> getAllImages();
+
+    @Query("SELECT * FROM image_table WHERE note_id=:id ORDER BY primary_column DESC")
+    LiveData<List<Image>> getNoteImages(int id);
 }

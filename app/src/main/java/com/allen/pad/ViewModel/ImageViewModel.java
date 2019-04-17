@@ -38,4 +38,8 @@ public class ImageViewModel extends AndroidViewModel {
         return allImages;
     }
 
+    public LiveData<List<Image>> getNoteImages(int id){
+        return repository.getNoteImages(id);
+    }
+
 }
